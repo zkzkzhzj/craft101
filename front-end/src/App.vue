@@ -1,23 +1,23 @@
 <template>
-	<div id="app">
+	<div id="top">
 		<img alt="Vue logo" src="./assets/logo.png" />
-		<HelloWorld msg="Welcome to Your Vue.js App!!" />
+		<TopLayout msg="Welcome to Your Vue.js App!!" />
 	</div>
 </template>
 
 <script>
-	import HelloWorld from "./components/HelloWorld.vue"
+	import TopLayout from "./components/TopLayout.vue"
 
 	export default {
-		name: "App",
+		name: "Top",
 		components: {
-			HelloWorld,
+			TopLayout,
 		},
 	}
 </script>
 
 <style>
-	#app {
+	#top {
 		font-family: Avenir, Helvetica, Arial, sans-serif;
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
