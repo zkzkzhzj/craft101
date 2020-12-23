@@ -1,7 +1,6 @@
 <template>
 	<div id="top">
-		<img alt="Vue logo" src="./assets/logo.png" />
-		<TopLayout msg="Welcome to Your Vue.js App!!" />
+		<TopLayout />
 	</div>
 </template>
 
@@ -16,13 +15,12 @@
 	}
 </script>
 
-<style>
+<style lang="scss">
 	#top {
 		font-family: Avenir, Helvetica, Arial, sans-serif;
+		/* 텍스트를 부드럽게 표시(하단 옵션 2개) */
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
-		text-align: center;
 		color: #2c3e50;
-		margin-top: 60px;
 	}
 </style>
