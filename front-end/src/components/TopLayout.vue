@@ -21,8 +21,7 @@
 </script>
 
 <style lang="scss">
-	$burger-size: 45px;
-	$logo-size: 50px;
+	$top-main-size: 50px;
 	$main-color: rgb(26, 83, 92);
 	$main-color-hover: rgba(26, 83, 92, 0.5);
 
@@ -35,7 +34,7 @@
 			width: 100%;
 			#burger-button {
 				position: absolute;
-				width: $logo-size;
+				width: $top-main-size;
 				background-color: #fff;
 				border: 0px;
 				span {
@@ -53,7 +52,7 @@
 				}
 			}
 			#main-logo {
-				height: $logo-size;
+				height: $top-main-size;
 			}
 		}
 	}
