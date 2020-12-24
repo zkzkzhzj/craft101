@@ -7,8 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import * as argon2 from 'argon2';
-import { PostEntity } from 'src/posts/post.entity';
-import { CommentEntity } from 'src/posts/comment.entity';
+import { Article } from 'src/articles/article.entity';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -16,7 +15,7 @@ export enum UserRole {
 }
 
 @Entity()
-export class UserEntity {
+export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -45,9 +44,6 @@ export class UserEntity {
   @Column({ default: false })
   isActive: boolean;
 
-  @OneToMany((type) => PostEntity, (post) => post.author)
-  posts: PostEntity[];
-
-  @OneToMany((type) => CommentEntity, (comment) => comment.author)
-  comments: CommentEntity[];
+  @OneToMany((type) => Article, (post) => post.author)
+  articles: Article[];
 }
