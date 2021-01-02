@@ -32,8 +32,14 @@ import { join } from 'path';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      synchronize: true,
-      logging: true,
+      synchronize: process.env.NODE_ENV !== 'prod',
+      logging: process.env.NODE_ENV !== 'prod',
+      entities: ['dist/**/entities/*.entity{.ts,.js}'],
+      migrationsTableName: 'craft_migration_table',
+      migrations: ['dist/migration/*.js'],
+      cli: {
+        migrationsDir: 'dist/migration',
+      },
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),

@@ -1,11 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, Repository } from 'typeorm';
-import { LoginUserDto } from './dto/login-user.dto';
-import { UserEntity, UserRole } from './entities/user.entity';
-import { UserRO } from './users.interface';
+import { LoginUserDto } from './dtos/login-user.dto';
+import { UserEntity } from './entities/user.entity';
+import { UserRO } from './interfaces/users.interface';
 import * as argon2 from 'argon2';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto } from './dtos/create-user.dto';
 import { validate } from 'class-validator';
 
 @Injectable()
