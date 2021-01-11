@@ -1,33 +1,27 @@
 import {
   IsBoolean,
   IsEmail,
+  IsEnum,
   IsOptional,
   IsString,
   Length,
 } from 'class-validator';
-import {
-  BeforeInsert,
-  Column,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from 'typeorm';
 import * as argon2 from 'argon2';
 import { ArticleEntity } from 'src/articles/entities/article.entity';
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { CoreEntity } from 'src/common/entities/core.entity';
 
 export enum UserRole {
   ADMIN = 'admin',
   GENERAL = 'general',
 }
+registerEnumType(UserRole, { name: 'UserRole' });
 
 @Entity()
 @ObjectType()
-export class UserEntity {
-  @PrimaryGeneratedColumn()
-  @Field(type => Number)
-  id: number;
-
+// @InputType({ isAbstract: true })
+export class UserEntity extends CoreEntity {
   @Column()
   @Field(type => String)
   @IsString()
@@ -42,9 +36,16 @@ export class UserEntity {
   @Column()
   @Field(type => String)
   @IsString()
+  @Length(5, 10)
+  nickname: string;
+
+  @Column()
+  @Field(type => String)
+  @IsString()
   password: string;
 
   @BeforeInsert()
+  @BeforeUpdate()
   async hashPassword() {
     this.password = await argon2.hash(this.password);
   }
@@ -55,10 +56,13 @@ export class UserEntity {
     default: UserRole.GENERAL,
   })
   @Field(type => UserRole)
+  @IsEnum(UserRole)
   role: UserRole;
 
   @Column({ default: false })
-  @Field(type => Boolean)
+  @Field(type => Boolean, { defaultValue: false })
+  @IsOptional()
+  @IsBoolean()
   isActive: boolean;
 
   @OneToMany(type => ArticleEntity, post => post.author)

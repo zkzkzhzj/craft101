@@ -8,6 +8,7 @@ import { ServersModule } from './servers/servers.module';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { join } from 'path';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { join } from 'path';
     UsersModule,
     ArticlesModule,
     ServersModule,
+    CommonModule,
   ],
   controllers: [],
   providers: [],
