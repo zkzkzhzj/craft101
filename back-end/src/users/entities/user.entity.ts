@@ -23,24 +23,24 @@ registerEnumType(UserRole, { name: 'UserRole' });
 // @InputType({ isAbstract: true })
 export class UserEntity extends CoreEntity {
   @Column()
-  @Field(type => String)
+  @Field(_type => String)
   @IsString()
   @Length(5)
   username: string;
 
   @Column()
-  @Field(type => String)
+  @Field(_type => String)
   @IsEmail()
   email: string;
 
   @Column()
-  @Field(type => String)
+  @Field(_type => String)
   @IsString()
-  @Length(5, 10)
+  @Length(5, 20)
   nickname: string;
 
   @Column()
-  @Field(type => String)
+  @Field(_type => String)
   @IsString()
   password: string;
 
@@ -55,17 +55,18 @@ export class UserEntity extends CoreEntity {
     enum: UserRole,
     default: UserRole.GENERAL,
   })
-  @Field(type => UserRole)
+  @Field(_type => UserRole)
+  @IsOptional()
   @IsEnum(UserRole)
-  role: UserRole;
+  role?: UserRole;
 
   @Column({ default: false })
-  @Field(type => Boolean, { defaultValue: false })
+  @Field(_type => Boolean, { defaultValue: false })
   @IsOptional()
   @IsBoolean()
-  isActive: boolean;
+  isActive?: boolean;
 
-  @OneToMany(type => ArticleEntity, post => post.author)
-  @Field(type => [ArticleEntity])
+  @OneToMany(_type => ArticleEntity, post => post.author)
+  @Field(_type => [ArticleEntity])
   articles: ArticleEntity[];
 }

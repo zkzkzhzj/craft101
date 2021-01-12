@@ -3,10 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, Repository } from 'typeorm';
 import { LoginUserDto } from './dtos/login-user.dto';
 import { UserEntity } from './entities/user.entity';
-import { UserRO } from './interfaces/users.interface';
 import * as argon2 from 'argon2';
-import { CreateUserDto } from './dtos/create-user.dto';
+import { CreateUserInput, CreateUserOutput } from './dtos/create-user.dto';
 import { validate } from 'class-validator';
+import { UpdateUserDto } from './dtos/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -19,9 +19,9 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  async findOne({ username, password }: LoginUserDto): Promise<UserEntity> {
+  async login({ username, password }: LoginUserDto): Promise<UserEntity> {
     const user = await this.usersRepository.findOne({ username });
-    if (!!user || (await argon2.verify(user.password, password))) {
+    if (!!user && (await argon2.verify(user.password, password))) {
       return user;
     }
     return null;
@@ -31,15 +31,19 @@ export class UsersService {
     await this.usersRepository.delete(id);
   }
 
-  async create({ email, username, password }: CreateUserDto): Promise<UserRO> {
-    const queryBuilder = await getRepository(UserEntity)
+  async create({
+    email,
+    username,
+    password,
+    nickname,
+  }: CreateUserInput): Promise<boolean> {
+    const queryBuilder = getRepository(UserEntity)
       .createQueryBuilder('user')
       .where('user.username = :username', { username })
       .orWhere('user.email = :email', { email });
-
     const isExists = await queryBuilder.getOne();
     if (isExists) {
-      const errorMessage = { message: 'username and email must be unique.' };
+      const errorMessage = { message: 'Username and Email must be unique.' };
       throw new HttpException(
         {
           errorMessage,
@@ -48,17 +52,27 @@ export class UsersService {
       );
     }
 
-    let newUserEntity = new UserEntity();
+    const newUserEntity = new UserEntity();
     newUserEntity.username = username;
     newUserEntity.email = email;
     newUserEntity.password = password;
+    newUserEntity.nickname = nickname;
     const errors = await validate(newUserEntity);
+    console.log(errors);
     if (errors.length > 0) {
-      const errorMessage = { message: 'request data is invalied.' };
+      const errorMessage = { message: 'Request data is invalied.' };
       throw new HttpException({ errorMessage }, HttpStatus.BAD_REQUEST);
-    } else {
-      let user = await this.usersRepository.save(newUserEntity);
-      return { user };
+    }
+    await this.usersRepository.save(newUserEntity);
+    return true;
+  }
+
+  async update({ id, data }: UpdateUserDto): Promise<boolean> {
+    try {
+      this.usersRepository.update(id, { ...data });
+      return true;
+    } catch (error) {
+      return false;
     }
   }
 }
