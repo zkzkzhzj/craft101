@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { IsEthereumAddress, IsNumber, IsString, IsUrl } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { CoreEntity } from 'src/common/entities/core.entity';
 import { Column, Entity } from 'typeorm';
 
@@ -13,23 +13,24 @@ export class ServerEntity extends CoreEntity {
 
   @Column()
   @Field(_type => String)
-  // TEST: Multiple types
-  @IsEthereumAddress()
-  @IsUrl()
+  @IsString()
   serverIP: string;
 
-  @Column()
+  @Column({ default: '' })
   @Field(_type => String)
+  @IsOptional()
   @IsString()
-  bannerImage: string;
+  bannerImage?: string;
 
-  @Column()
+  @Column({ default: '' })
   @Field(_type => String)
+  @IsOptional()
   @IsString()
-  homepageURI: string;
+  homepageURI?: string;
 
   @Column({ default: 0 })
   @Field(_type => Number)
+  @IsOptional()
   @IsNumber()
-  favoriteCount: number;
+  favoriteCount?: number;
 }
