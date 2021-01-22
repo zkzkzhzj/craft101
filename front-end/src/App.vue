@@ -1,26 +1,27 @@
 <template>
-	<div id="top">
-		<TopLayout />
-	</div>
+  <div id="container">
+    <top-component />
+    <div id="body">
+      <router-view />
+    </div>
+  </div>
 </template>
 
 <script>
-	import TopLayout from "./components/TopLayout.vue"
+  import TopComponent from "./components/TopLayout";
 
-	export default {
-		name: "Top",
-		components: {
-			TopLayout,
-		},
-	}
+  export default {
+    components: { TopComponent },
+  };
 </script>
 
 <style lang="scss">
-	#top {
-		font-family: Avenir, Helvetica, Arial, sans-serif;
-		/* 텍스트를 부드럽게 표시(하단 옵션 2개) */
-		-webkit-font-smoothing: antialiased;
-		-moz-osx-font-smoothing: grayscale;
-		color: #2c3e50;
-	}
+  #container {
+    display: flex;
+    justify-content: center;
+    // 기본적으로 body 에 패딩 값이 존재한다
+    #body {
+      padding-top: 50px;
+    }
+  }
 </style>
