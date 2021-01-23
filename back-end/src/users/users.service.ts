@@ -1,12 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, Repository } from 'typeorm';
-import { LoginUserDto } from './dtos/login-user.dto';
 import { UserEntity } from './entities/user.entity';
 import * as argon2 from 'argon2';
-import { CreateUserInput, CreateUserOutput } from './dtos/create-user.dto';
+import { CreateUserInput } from './dtos/create-user.dto';
 import { validate } from 'class-validator';
-import { UpdateUserDto } from './dtos/update-user.dto';
+import { UpdateUserInput } from './dtos/update-user.dto';
+import { UserLoginInput, UserLoginOutput } from './dtos/login-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -19,12 +19,24 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  async login({ username, password }: LoginUserDto): Promise<UserEntity> {
+  findById(id: number): Promise<UserEntity> {
+    return this.usersRepository.findOne({ id });
+  }
+
+  async login({
+    username,
+    password,
+  }: UserLoginInput): Promise<UserLoginOutput> {
     const user = await this.usersRepository.findOne({ username });
-    if (!!user && (await argon2.verify(user.password, password))) {
-      return user;
+    if (user !== null && (await argon2.verify(user.password, password))) {
+      return {
+        code: HttpStatus.OK,
+        token: '12',
+      };
     }
-    return null;
+    return {
+      code: HttpStatus.UNAUTHORIZED,
+    };
   }
 
   async remove(id: string): Promise<void> {
@@ -67,7 +79,7 @@ export class UsersService {
     return true;
   }
 
-  async update({ id, data }: UpdateUserDto): Promise<boolean> {
+  async update({ id, data }: UpdateUserInput): Promise<boolean> {
     try {
       this.usersRepository.update(id, { ...data });
       return true;

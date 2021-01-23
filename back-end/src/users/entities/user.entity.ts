@@ -11,6 +11,7 @@ import * as argon2 from 'argon2';
 import { ArticleEntity } from 'src/articles/entities/article.entity';
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { CoreEntity } from 'src/common/entities/core.entity';
+import { InternalServerErrorException } from '@nestjs/common';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -46,8 +47,12 @@ export class UserEntity extends CoreEntity {
 
   @BeforeInsert()
   @BeforeUpdate()
-  async hashPassword() {
-    this.password = await argon2.hash(this.password);
+  async hashPassword(): Promise<void> {
+    try {
+      this.password = await argon2.hash(this.password);
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 
   @Column({

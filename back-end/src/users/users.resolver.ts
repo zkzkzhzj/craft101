@@ -1,7 +1,8 @@
 import { HttpStatus } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { CreateUserInput, CreateUserOutput } from './dtos/create-user.dto';
-import { UpdateUserDto } from './dtos/update-user.dto';
+import { UserLoginInput, UserLoginOutput } from './dtos/login-user.dto';
+import { UpdateUserInput } from './dtos/update-user.dto';
 import { UsersService } from './users.service';
 
 @Resolver()
@@ -28,8 +29,13 @@ export class UsersResolver {
 
   @Mutation(() => Boolean)
   async updateUser(
-    @Args('form') updateUserDto: UpdateUserDto,
+    @Args('form') updateUserDto: UpdateUserInput,
   ): Promise<boolean> {
     return this.usersService.update(updateUserDto);
+  }
+
+  @Mutation(() => UserLoginOutput)
+  login(@Args('user') loginInput: UserLoginInput): Promise<UserLoginOutput> {
+    return this.usersService.login(loginInput);
   }
 }
