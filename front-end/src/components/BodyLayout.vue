@@ -1,13 +1,19 @@
 <template>
   <div>
-    <ranking-layout />
+    <div>
+      <ranking-layout />
+    </div>
+    <div>
+      <server-list-layout />
+    </div>
   </div>
 </template>
 
 <script>
   import RankingLayout from "./RankingLayout.vue";
+  import ServerListLayout from "./ServerListLayout.vue";
   export default {
-    components: { RankingLayout },
+    components: { RankingLayout, ServerListLayout },
   };
 </script>
 
