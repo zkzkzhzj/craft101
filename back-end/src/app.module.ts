@@ -7,15 +7,12 @@ import {
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 import { UsersModule } from './users/users.module';
-import { ArticlesModule } from './articles/articles.module';
 import { GraphQLModule } from '@nestjs/graphql';
-import { ServersModule } from './servers/servers.module';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { join } from 'path';
-import { CommonModule } from './common/common.module';
 import { JwtModule } from './jwt/jwt.module';
-import { JwtMiddleware } from './jwt/jwt.middleware';
+// import { JwtMiddleware } from './jwt/jwt.middleware';
 
 @Module({
   imports: [
@@ -53,14 +50,12 @@ import { JwtMiddleware } from './jwt/jwt.middleware';
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
+      context: ({ req }) => ({ 'x-jwt': req.headers['x-jwt'] }),
     }),
     JwtModule.forRoot({
       privateKey: process.env.JWT_SECRET_KEY,
     }),
     UsersModule,
-    ArticlesModule,
-    ServersModule,
-    CommonModule,
   ],
   controllers: [],
   providers: [],
@@ -68,9 +63,11 @@ import { JwtMiddleware } from './jwt/jwt.middleware';
 export class AppModule implements NestModule {
   constructor(private connection: Connection) {}
   configure(consumer: MiddlewareConsumer) {
+    /*
     consumer.apply(JwtMiddleware).forRoutes({
       path: '/graphql',
       method: RequestMethod.ALL,
     });
+    */
   }
 }

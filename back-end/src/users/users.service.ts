@@ -7,12 +7,14 @@ import { CreateUserInput } from './dtos/create-user.dto';
 import { validate } from 'class-validator';
 import { UpdateUserInput } from './dtos/update-user.dto';
 import { UserLoginInput, UserLoginOutput } from './dtos/login-user.dto';
+import { JwtService } from 'src/jwt/jwt.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly usersRepository: Repository<UserEntity>,
+    private readonly jwtService: JwtService,
   ) {}
 
   findAll(): Promise<UserEntity[]> {
@@ -29,9 +31,10 @@ export class UsersService {
   }: UserLoginInput): Promise<UserLoginOutput> {
     const user = await this.usersRepository.findOne({ username });
     if (user !== null && (await argon2.verify(user.password, password))) {
+      const token = this.jwtService.sign(user.id);
       return {
         code: HttpStatus.OK,
-        token: '12',
+        token,
       };
     }
     return {
@@ -39,7 +42,7 @@ export class UsersService {
     };
   }
 
-  async remove(id: string): Promise<void> {
+  async delete(id: string): Promise<void> {
     await this.usersRepository.delete(id);
   }
 
@@ -70,7 +73,6 @@ export class UsersService {
     newUserEntity.password = password;
     newUserEntity.nickname = nickname;
     const errors = await validate(newUserEntity);
-    console.log(errors);
     if (errors.length > 0) {
       const errorMessage = { message: 'Request data is invalied.' };
       throw new HttpException({ errorMessage }, HttpStatus.BAD_REQUEST);
