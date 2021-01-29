@@ -1,11 +1,19 @@
 <template>
-  <div>
-    <p>dasdasd</p>
+  <div id="subServer">
+    <server-list-info-layout />
   </div>
 </template>
 
 <script>
-  export default {};
+  import ServerListInfoLayout from "./ServerListInfoLayout.vue";
+  export default {
+    components: { ServerListInfoLayout },
+  };
 </script>
 
-<style></style>
+<style lang="scss">
+  #subServer {
+    width: 100%;
+    max-width: 1280px;
+  }
+</style>

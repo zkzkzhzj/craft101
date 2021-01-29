@@ -1,5 +1,14 @@
 import Vue from "vue";
 import App from "./App.vue";
+/*
+import { VueAgile } from 'vue-agile'
+
+export default { 
+    components: {
+        agile: VueAgile 
+    }
+}
+*/
 
 // 라우터 추가
 import router from "./router/router";
